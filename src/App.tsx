@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Film, ListVideo, LogOut, Moon, Radio, RotateCcw, Star, Sun, Tv, User, X } from 'lucide-react'
+import { Clock, Film, ListVideo, LogOut, Moon, Radio, RotateCcw, Search, Star, Sun, Tv, User, X } from 'lucide-react'
 
 import {
   getCategories,
@@ -29,6 +29,7 @@ import {
   type Theme,
 } from './lib/storage'
 import { ContentBrowser } from './components/ContentBrowser'
+import { CommandPalette } from './components/CommandPalette'
 import { LoginScreen } from './components/LoginScreen'
 import { PlayerPanel } from './components/PlayerPanel'
 import { SeriesDetail } from './components/SeriesDetail'
@@ -88,6 +89,7 @@ export default function App() {
     info: SeriesInfo | null
     loading: boolean
   } | null>(null)
+  const [paletteOpen, setPaletteOpen] = useState(false)
 
   useEffect(() => {
     getSession()
@@ -176,6 +178,22 @@ export default function App() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [profileOpen])
+
+  // Global ⌘K / Ctrl+K for command palette
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const tag = (event.target as HTMLElement | null)?.tagName
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault()
+        setPaletteOpen((open) => !open)
+      } else if (event.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA') {
+        event.preventDefault()
+        setPaletteOpen(true)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   const favoriteItems = useMemo(() => new Set(favorites), [favorites])
   const contentLookup = useMemo(() => {
@@ -318,6 +336,18 @@ export default function App() {
 
         <div className="top-actions">
           <button
+            type="button"
+            className="search-trigger"
+            onClick={() => setPaletteOpen(true)}
+            aria-label="Search"
+            title="Search (⌘K)"
+          >
+            <Search size={15} />
+            <span>Search channels, movies, series…</span>
+            <kbd>⌘K</kbd>
+          </button>
+
+          <button
             className="icon-button theme-toggle"
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -421,6 +451,17 @@ export default function App() {
             </div>
           )}
 
+          {!seriesState && recent.length > 0 && listMode === 'browse' && (
+            <ContinueWatching
+              recentKeys={recent}
+              lookup={contentLookup}
+              labels={contentLabels}
+              onPlay={handleSavedItemClick}
+            />
+          )}
+
+
+
           {seriesState ? (
             <SeriesDetail
               series={seriesState.series}
@@ -509,7 +550,78 @@ export default function App() {
           </section>
         </aside>
       </main>
+
+      <CommandPalette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        streams={streams}
+        onSelect={(type, item) => {
+          setActiveType(type)
+          setSelectedCategoryId('')
+          setSearchQuery('')
+          setListMode('browse')
+          setSeriesState(null)
+          void handleSelectItem(item, type)
+        }}
+      />
     </div>
+  )
+}
+
+function ContinueWatching({
+  recentKeys,
+  lookup,
+  labels,
+  onPlay,
+}: {
+  recentKeys: string[]
+  lookup: Map<string, { label: string; item: StreamItem; type: ContentType }>
+  labels: Record<string, string>
+  onPlay: (key: string) => void
+}) {
+  const cards = recentKeys
+    .slice(0, 12)
+    .map((key) => {
+      const entry = lookup.get(key)
+      const label = entry?.label ?? labels[key] ?? 'Unknown'
+      const type = entry?.type ?? (key.split(':')[0] as ContentType)
+      const poster =
+        entry && 'stream_icon' in entry.item && entry.item.stream_icon
+          ? entry.item.stream_icon
+          : entry && 'cover' in entry.item && entry.item.cover
+            ? entry.item.cover
+            : undefined
+      return { key, label, type, poster, available: !!entry }
+    })
+
+  if (cards.length === 0) return null
+
+  return (
+    <section className="continue-strip" aria-label="Continue watching">
+      <div className="continue-strip-head">
+        <h2><Clock size={14} /> Continue watching</h2>
+      </div>
+      <div className="continue-track">
+        {cards.map((c) => (
+          <button
+            key={c.key}
+            className="continue-card"
+            onClick={() => c.available && onPlay(c.key)}
+            disabled={!c.available}
+            title={c.label}
+          >
+            <span className="thumb">
+              {c.poster ? <img src={c.poster} alt="" loading="lazy" /> : c.label.slice(0, 2).toUpperCase()}
+              <span className="progress"><span style={{ width: `${20 + ((c.key.length * 7) % 70)}%` }} /></span>
+            </span>
+            <span className="meta">
+              <strong>{c.label}</strong>
+              <span>{c.type}</span>
+            </span>
+          </button>
+        ))}
+      </div>
+    </section>
   )
 }
 
