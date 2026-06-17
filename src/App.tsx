@@ -336,6 +336,18 @@ export default function App() {
 
         <div className="top-actions">
           <button
+            type="button"
+            className="search-trigger"
+            onClick={() => setPaletteOpen(true)}
+            aria-label="Search"
+            title="Search (⌘K)"
+          >
+            <Search size={15} />
+            <span>Search channels, movies, series…</span>
+            <kbd>⌘K</kbd>
+          </button>
+
+          <button
             className="icon-button theme-toggle"
             onClick={toggleTheme}
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
