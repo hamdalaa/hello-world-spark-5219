@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Film, ListVideo, LogOut, Moon, Radio, RotateCcw, Star, Sun, Tv, User, X } from 'lucide-react'
+import { Clock, Film, ListVideo, LogOut, Moon, Radio, RotateCcw, Search, Star, Sun, Tv, User, X } from 'lucide-react'
 
 import {
   getCategories,
@@ -29,6 +29,7 @@ import {
   type Theme,
 } from './lib/storage'
 import { ContentBrowser } from './components/ContentBrowser'
+import { CommandPalette } from './components/CommandPalette'
 import { LoginScreen } from './components/LoginScreen'
 import { PlayerPanel } from './components/PlayerPanel'
 import { SeriesDetail } from './components/SeriesDetail'
@@ -88,6 +89,7 @@ export default function App() {
     info: SeriesInfo | null
     loading: boolean
   } | null>(null)
+  const [paletteOpen, setPaletteOpen] = useState(false)
 
   useEffect(() => {
     getSession()
