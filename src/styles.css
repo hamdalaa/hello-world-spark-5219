@@ -435,6 +435,8 @@ html[data-theme='dark'] .top-bar { background: hsl(212 50% 8% / .75); }
   gap: 16px;
   padding: 16px 20px 20px;
   min-height: 0;
+  height: 100%;
+  overflow: hidden;
 }
 .workspace.browse-stretch { grid-template-columns: minmax(0, 1fr) minmax(360px, 460px); }
 
