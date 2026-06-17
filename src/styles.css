@@ -263,7 +263,8 @@ a { color: var(--primary-strong); text-decoration: none; }
 
 /* ─────────────────────────── App shell ─────────────────────────── */
 .app-shell {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   display: grid;
   grid-template-rows: auto 1fr;
 }
