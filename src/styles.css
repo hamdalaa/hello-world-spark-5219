@@ -444,7 +444,7 @@ html[data-theme='dark'] .top-bar { background: hsl(212 50% 8% / .75); }
   .workspace { grid-template-columns: 1fr; }
 }
 
-.left-column, .right-column { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.left-column, .right-column { display: flex; flex-direction: column; gap: 14px; min-width: 0; height: 100%; overflow: hidden; }
 
 /* ─────────────────────────── Browse column ─────────────────────────── */
 .browse-header {
