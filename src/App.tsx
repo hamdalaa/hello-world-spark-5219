@@ -179,6 +179,22 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [profileOpen])
 
+  // Global ⌘K / Ctrl+K for command palette
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      const tag = (event.target as HTMLElement | null)?.tagName
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault()
+        setPaletteOpen((open) => !open)
+      } else if (event.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA') {
+        event.preventDefault()
+        setPaletteOpen(true)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
   const favoriteItems = useMemo(() => new Set(favorites), [favorites])
   const contentLookup = useMemo(() => {
     const next = new Map<string, { label: string; item: StreamItem; type: ContentType }>()
