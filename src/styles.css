@@ -454,6 +454,7 @@ html[data-theme='dark'] .top-bar { background: hsl(212 50% 8% / .75); }
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
 }
 
 .tab-bar {
@@ -513,6 +514,7 @@ html[data-theme='dark'] .top-bar { background: hsl(212 50% 8% / .75); }
   color: hsl(353 60% 35%);
   border-radius: var(--radius-sm);
   font-size: 12px;
+  flex-shrink: 0;
 }
 .inline-alert button { color: hsl(353 60% 35%); font-weight: 600; text-decoration: underline; }
 
@@ -523,6 +525,7 @@ html[data-theme='dark'] .top-bar { background: hsl(212 50% 8% / .75); }
   border-radius: var(--radius-md);
   padding: 14px;
   box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
 }
 .continue-strip-head {
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
@@ -576,7 +579,7 @@ html[data-theme='dark'] .top-bar { background: hsl(212 50% 8% / .75); }
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   display: flex;
-  min-height: 480px;
+  min-height: 0;
   overflow: hidden;
   flex: 1;
 }
@@ -591,6 +594,7 @@ html[data-theme='dark'] .top-bar { background: hsl(212 50% 8% / .75); }
   padding: 12px 8px;
   gap: 2px;
   flex-shrink: 0;
+  height: 100%;
 }
 .rail-heading {
   display: flex; flex-direction: column; gap: 8px;
@@ -639,7 +643,7 @@ html[data-theme='dark'] .top-bar { background: hsl(212 50% 8% / .75); }
 }
 .rail-resizer:hover, .browser-shell.resizing-categories .rail-resizer { border-color: var(--primary); }
 
-.content-pane { display: flex; flex-direction: column; min-width: 0; }
+.content-pane { display: flex; flex-direction: column; min-width: 0; height: 100%; overflow: hidden; }
 .content-toolbar {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 14px;
@@ -919,7 +923,7 @@ html[data-theme='dark'] .top-bar { background: hsl(212 50% 8% / .75); }
   box-shadow: var(--shadow-sm);
   flex: 1;
   display: flex; flex-direction: column;
-  min-height: 480px;
+  min-height: 0;
   overflow: hidden;
 }
 .series-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
