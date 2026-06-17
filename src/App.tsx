@@ -451,6 +451,17 @@ export default function App() {
             </div>
           )}
 
+          {!seriesState && recent.length > 0 && listMode === 'browse' && (
+            <ContinueWatching
+              recentKeys={recent}
+              lookup={contentLookup}
+              labels={contentLabels}
+              onPlay={handleSavedItemClick}
+            />
+          )}
+
+
+
           {seriesState ? (
             <SeriesDetail
               series={seriesState.series}
