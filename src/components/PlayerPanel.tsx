@@ -80,11 +80,13 @@ export function PlayerPanel({
     setError('')
     const video = videoRef.current
     if (!video || !item) return
-    const src = resolveSource(item)
+    const currentVideo: HTMLVideoElement = video
+    const currentItem = item
+    const src = resolveSource(currentItem)
     let hls: { destroy: () => void } | undefined
     let disposed = false
 
-    const useNativeHls = video.canPlayType('application/vnd.apple.mpegurl') !== ''
+    const useNativeHls = currentVideo.canPlayType('application/vnd.apple.mpegurl') !== ''
     const needsHls = src.endsWith('.m3u8') && !useNativeHls
 
     async function load() {
@@ -93,10 +95,10 @@ export function PlayerPanel({
           const Hls = (await import('hls.js')).default
           if (disposed) return
           if (Hls.isSupported()) {
-            const instance = new Hls({ enableWorker: true, lowLatencyMode: item!.isLive === true })
+            const instance = new Hls({ enableWorker: true, lowLatencyMode: currentItem.isLive === true })
             hls = instance
             instance.loadSource(src)
-            instance.attachMedia(video)
+            instance.attachMedia(currentVideo)
             setIsHls(true)
             return
           }
@@ -104,7 +106,7 @@ export function PlayerPanel({
           // fall through to native
         }
       }
-      video.src = src
+      currentVideo.src = src
       setIsHls(false)
     }
     void load()
@@ -112,8 +114,8 @@ export function PlayerPanel({
     return () => {
       disposed = true
       try { hls?.destroy() } catch { /* ignore */ }
-      video.removeAttribute('src')
-      video.load()
+      currentVideo.removeAttribute('src')
+      currentVideo.load()
     }
   }, [item])
 
